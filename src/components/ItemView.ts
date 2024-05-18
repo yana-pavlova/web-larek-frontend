@@ -1,5 +1,5 @@
 import { IEventEmitter, IItem, IItemView } from "../types";
-import { IView, View } from "./base/view";
+import { View } from "./base/view";
 
 export class ItemView extends View implements IItemView {
   category: HTMLSpanElement | null;
