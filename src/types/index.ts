@@ -11,7 +11,7 @@ export interface IItem {
   image: string;
   title: string;
   category: string;
-  price: number;
+  price: number | null; // есть товар, у которого нет цены
 }
 
 // модель покупателя
