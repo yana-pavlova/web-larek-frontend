@@ -1,10 +1,3 @@
-DONE:
-- base/view.ts
-- ItemView.ts
-- CartView.ts
-- CartModel.ts
-- 
-
 # Проектная работа "Веб-ларек"
 
 Стек: HTML, SCSS, TS, Webpack
