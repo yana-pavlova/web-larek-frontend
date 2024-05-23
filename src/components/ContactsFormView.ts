@@ -1,13 +1,14 @@
 import { IContactsFormView, IEventEmitter } from "../types";
+import { cloneTemplate } from "../utils/utils";
 
 export class ContactsFormView implements IContactsFormView {
-  form: HTMLFormElement;
-  submitButton: HTMLButtonElement;
-  emailInput: HTMLInputElement;
-  phoneInput: HTMLInputElement;
+  protected form: HTMLFormElement;
+  protected submitButton: HTMLButtonElement;
+  protected emailInput: HTMLInputElement;
+  protected phoneInput: HTMLInputElement;
 
-  constructor(container: HTMLElement, events: IEventEmitter) {
-    this.form = container as HTMLFormElement;
+  constructor(events: IEventEmitter) {
+    this.form = cloneTemplate(document.querySelector('#contacts') as HTMLTemplateElement);
     this.submitButton = this.form.querySelector('.submit-button') as HTMLButtonElement;
     this.emailInput = this.form.elements.namedItem('email') as HTMLInputElement;
     this.phoneInput = this.form.elements.namedItem('phone') as HTMLInputElement;

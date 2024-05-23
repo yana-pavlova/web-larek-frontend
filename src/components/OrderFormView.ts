@@ -1,4 +1,5 @@
 import { IEventEmitter, IOrderFormView } from "../types";
+import { cloneTemplate } from "../utils/utils";
 
 export class OrderFormView implements IOrderFormView {
   form: HTMLFormElement;
@@ -7,8 +8,8 @@ export class OrderFormView implements IOrderFormView {
   submitButton: HTMLButtonElement;
   adressInput: HTMLInputElement;
 
-  constructor(container: HTMLElement, events: IEventEmitter) {
-    this.form = container as HTMLFormElement;
+  constructor(events: IEventEmitter) {
+    this.form = cloneTemplate(document.querySelector('#order') as HTMLTemplateElement);
     this.paymentCashButton = this.form.querySelector('#buttonCard') as HTMLButtonElement;
     this.paymentCardButton = this.form.querySelector('#buttonCash') as HTMLButtonElement;
     this.submitButton = this.form.querySelector('.order__button') as HTMLButtonElement;

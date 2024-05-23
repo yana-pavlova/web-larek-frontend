@@ -1,23 +1,26 @@
 import { IEventEmitter, IItem, IModalView } from "../types";
+import { cloneTemplate } from "../utils/utils";
 
 export class ModalView implements IModalView {
-  closeButton: HTMLElement;
-  container: HTMLElement;
-  parentContainer: HTMLElement;
-  events: IEventEmitter;
-  item?: IItem;
+  protected closeButton: HTMLElement;
+  protected container: HTMLElement;
+  protected modal: HTMLElement;
+  protected events: IEventEmitter;
+  protected item?: IItem;
 
-  constructor(parentContainer: HTMLElement, events: IEventEmitter) {
-    this.parentContainer = parentContainer;
+  private static instance: ModalView;
+
+  private constructor(events: IEventEmitter) {
+    this.modal = document.querySelector('#modal-container') as HTMLElement;
     this.events = events;
-    this.container = parentContainer.querySelector('.modal__content') as HTMLElement;
-    this.closeButton = parentContainer.querySelector('.modal__close') as HTMLButtonElement;
+    this.container = this.modal.querySelector('.modal__content') as HTMLElement;
+    this.closeButton = this.modal.querySelector('.modal__close') as HTMLButtonElement;
 
     // клик по кнопке закрытия
     this.closeButton.addEventListener(('click'), this.closeModal.bind(this));
 
     // клик по оверлею
-    this.parentContainer.addEventListener(('mousedown'), (event) => {
+    this.modal.addEventListener(('mousedown'), (event) => {
       if(event.target === event.currentTarget) {
         this.closeModal();
       }
@@ -27,25 +30,38 @@ export class ModalView implements IModalView {
     this.handleEscUp = this.handleEscUp.bind(this);
   }
 
-  handleEscUp(event: KeyboardEvent) {
+  static getInstance(events: IEventEmitter): ModalView {
+    if (!ModalView.instance) {
+      ModalView.instance = new ModalView(events);
+    }
+
+    return ModalView.instance;
+}
+
+  protected handleEscUp(event: KeyboardEvent) {
     if(event.key === "Escape") {
       this.closeModal()
     }
   }
 
   openModal(element: HTMLElement) {
+    this.clearModal();
     document.addEventListener(('keyup'), this.handleEscUp);
-    this.parentContainer.style.display = 'block';
+    this.modal.style.display = 'block';
     this.render(element);
   }
 
   closeModal() {
-    this.parentContainer.style.display = 'none';
+    this.modal.style.display = 'none';
+    this.clearModal();
     document.removeEventListener("keyup", this.handleEscUp);
   }
 
-  // to-do: добавить необязательный агрумент data с типом IItem, чтобы открывать в модалке определённый товар
-  render(element: HTMLElement) {
+  protected clearModal() {
+    this.container.innerHTML = '';
+  }
+
+  protected render(element: HTMLElement) {
     this.container.append(element);
   }
 }

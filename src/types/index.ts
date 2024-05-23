@@ -50,8 +50,8 @@ export type TItemFullInfo = Pick<IItem, 'image' | 'category' | 'title' | 'descri
 // интерфейс корзины
 export interface ICartModel {
   items: Map<string, number>;
-  add(id: string): void;
-  remove(id: string): void;
+  add(item: Partial<IItem>): void;
+  remove(item: Partial<IItem>): void;
 }
 
 // интерфейс eventEmitter
@@ -61,23 +61,11 @@ export interface IEventEmitter {
 
 // интерфейс корзины
 export interface ICartView {
-  items: HTMLElement[];
-  parentContainer: HTMLElement;
-  container: HTMLElement;
-  submitButton: HTMLButtonElement;
-  cartButton: HTMLButtonElement;
-  price: HTMLSpanElement;
-
   render(): HTMLElement
 }
 
 // интерфейс формы с контактами
 export interface IContactsFormView {
-  form: HTMLFormElement;
-  submitButton: HTMLButtonElement;
-  emailInput: HTMLInputElement;
-  phoneInput: HTMLInputElement;
-
   render(): void;
   toggleSubmitButton(): void;
 }
@@ -95,24 +83,20 @@ export interface IOrderFormView {
 
 // интерфейс товара
 export interface IItemView {
-  render(data: Partial<IItem>): HTMLElement;
+  render(): HTMLElement;
   category: HTMLSpanElement | null;
   title: HTMLHeadingElement | HTMLSpanElement | null;
   image: HTMLImageElement | null;
   price: HTMLSpanElement | null;
   description: HTMLParagraphElement | null;
 
-  cartButton: HTMLButtonElement | null;
+  addCartButton: HTMLButtonElement | null;
+  removeCartButton: HTMLButtonElement | null;
 }
 
 // интерфейс модального окна
 
 export interface IModalView {
-  closeButton: HTMLElement;
-  parentContainer: HTMLElement;
-  container: HTMLElement;
-  events: IEventEmitter;
-
   openModal: (element: HTMLElement) => void;
   closeModal: () => void;
 }
@@ -123,3 +107,19 @@ export interface IView {
   container: HTMLElement,
   render(data?: unknown): HTMLElement
 }
+
+//
+export interface ModalOpenEventData {
+  element: HTMLElement;
+  data?: Partial<IItem>;
+}
+
+// интерфейс заказа
+export type TOrder = [
+  payment: PaymentType,
+  email: string,
+  phone: string,
+  address: string,
+  total: number,
+  items: string[],
+]

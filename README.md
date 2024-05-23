@@ -1,3 +1,7 @@
+РАССМОТРЕТЬ:
+- синглтон паттерн для модалки https://practicum.yandex.ru/learn/frontend-developer/courses/ab2d21aa-198e-4dfe-a360-91c0790dfe09/sprints/179005/topics/53f1da26-ba1c-4c11-896c-95d34b091f3d/lessons/4e833ab9-147d-4614-8bc4-3bfbce35be24/
+- 
+
 # Проектная работа "Веб-ларек"
 
 Стек: HTML, SCSS, TS, Webpack
@@ -116,7 +120,6 @@ export interface ICartView {
   parentContainer: HTMLElement;
   container: HTMLElement;
   submitButton: HTMLButtonElement;
-  cartButton: HTMLButtonElement;
   price: HTMLSpanElement;
 
   render(): HTMLElement
@@ -167,9 +170,9 @@ export interface IItemView {
 ```
 export interface IModalView {
   closeButton: HTMLElement;
-  parentContainer: HTMLElement;
   container: HTMLElement;
   events: IEventEmitter;
+  modal: HTMLElement;
 
   openModal: (element: HTMLElement) => void;
   closeModal: () => void;
@@ -222,17 +225,16 @@ export interface IView {
 Переопределяет родительский метод:
 - `render` - реализует разметку элемента
 
-#### Класс ModalView
-Принадлежит слою представления (вью). Реализует возможность открытия модального окна, а также его закрытия по кнопке закрытия, при клике вне модального окна и при нажатии клавиши Escape.
-Note for self: создаётся только один экземпляр модалки, в который через рендер передаётся разметка, которую надо отобразить
+#### Класс ModalView (Singleton)
+Принадлежит слою представления (вью). Реализован паттерном Singleton. Реализует возможность открытия модального окна, а также его закрытия по кнопке закрытия, при клике вне модального окна и при нажатии клавиши Escape. В конструкторе находит HTML элемент модалки на странице.
 
 Имеет три основных метода:
-- `render` - рендерит содержимое модалки
+- `render` - рендерит содержимое модалки (разметка, которую нужно отрендерить переадаётся в аргументе метода)
 - `openModal` - открывает модальное окно
 - `closeModal` - закрывает модальное окно
 
 #### Класс CartView
-Принадлежит слою представления (вью). Реализует разметку корзины покупателя. В конструктор принимает массив сгенерированных разметок товаров, родительский контейнер корзины (из темплейта) и экземпляр EventEmitter.
+Принадлежит слою представления (вью). Реализует разметку корзины покупателя. В конструктор принимает экземпляр EventEmitter.
 
 Имеет один метод:
 - `render` - возвращает разметку корзины
