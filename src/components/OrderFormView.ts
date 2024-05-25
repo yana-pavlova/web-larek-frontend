@@ -1,47 +1,57 @@
-import { IEventEmitter, IOrderFormView } from "../types";
-import { cloneTemplate } from "../utils/utils";
+import { IEventEmitter, IFormView, PaymentType } from "../types";
+import { View } from "./base/view";
 
-export class OrderFormView implements IOrderFormView {
-  form: HTMLFormElement;
-  paymentCashButton: HTMLButtonElement;
-  paymentCardButton: HTMLButtonElement;
-  submitButton: HTMLButtonElement;
-  adressInput: HTMLInputElement;
+export class OrderFormView extends View implements IFormView {
+  protected element: HTMLFormElement;
+  protected paymentCashButton: HTMLButtonElement;
+  protected paymentCardButton: HTMLButtonElement;
+  protected submitButton: HTMLButtonElement;
+  protected adressInput: HTMLInputElement;
+  protected payment: string;
+  protected address: string;
 
-  constructor(events: IEventEmitter) {
-    this.form = cloneTemplate(document.querySelector('#order') as HTMLTemplateElement);
-    this.paymentCashButton = this.form.querySelector('#buttonCard') as HTMLButtonElement;
-    this.paymentCardButton = this.form.querySelector('#buttonCash') as HTMLButtonElement;
-    this.submitButton = this.form.querySelector('.order__button') as HTMLButtonElement;
-    this.adressInput = this.form.elements.namedItem('address') as HTMLInputElement;
+  constructor(element: HTMLElement, events: IEventEmitter) {
+    super(element, events);
+
+    this.paymentCardButton = this.element.querySelector('#buttonCard') as HTMLButtonElement;
+    this.paymentCashButton = this.element.querySelector('#buttonCash') as HTMLButtonElement;
+    this.submitButton = this.element.querySelector('.order__button') as HTMLButtonElement;
+    this.adressInput = this.element.elements.namedItem('address') as HTMLInputElement;
 
     this.adressInput.addEventListener(('input'), (event) => {
-      console.log("Address changed: ", this.adressInput.value);
+      this.address = this.adressInput.value;
+      this.checkSubmitButtonState();
     })
 
     this.submitButton.addEventListener(('click'), (event) => {
       event.preventDefault();
-      console.log("Order submitted. Address:", this.adressInput.value);
+      this.events.emit('orderData:changed', {payment: this.payment, address: this.adressInput.value});
     })
 
     this.paymentCashButton.addEventListener(('click'), (event) => {
-      console.log("Cash payment selected");
+      this.paymentCardButton.classList.remove('button_alt-active');
+      this.paymentCashButton.classList.add('button_alt-active');
+      this.payment = this.paymentCashButton.dataset.payment;
+      this.checkSubmitButtonState();
     })
 
     this.paymentCardButton.addEventListener(('click'), (event) => {
-      console.log("Card payment selected");
+      this.paymentCashButton.classList.remove('button_alt-active');
+      this.paymentCardButton.classList.add('button_alt-active');
+      this.payment = this.paymentCardButton.dataset.payment;
+      this.checkSubmitButtonState();
     })
   }
 
-  toggleSubmitButton() {
-    if(this.submitButton.disabled === false) {
-      this.submitButton.disabled = true;
-    } else {
+  protected checkSubmitButtonState() {
+    if(this.address && this.payment) {
       this.submitButton.disabled = false;
+    } else {
+      this.submitButton.disabled = true;
     }
   }
 
   render() {
-    return this.form
+    return super.render() as HTMLFormElement;
   }
 }

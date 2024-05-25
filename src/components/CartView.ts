@@ -1,33 +1,33 @@
-import { ICartView, IEventEmitter, IItem } from "../types";
-import { cloneTemplate } from "../utils/utils";
+import { ICartView, IEventEmitter } from "../types";
+import { View } from "./base/view";
 
-export class CartView implements ICartView {
+export class CartView extends View implements ICartView {
   // items: HTMLElement[] = [];
   protected items: {
     element: HTMLElement;
     id: string
     }[] = [];
-  protected parentContainer: HTMLElement;
+  protected element: HTMLElement;
   protected container: HTMLElement;
   protected submitButton: HTMLButtonElement;
-  protected price: HTMLSpanElement;
+  protected priceContainer: HTMLSpanElement;
   protected events: IEventEmitter;
   protected itemsCount: HTMLSpanElement;
+  protected itemIndexes: NodeListOf<HTMLSpanElement>;
 
-  constructor(events: IEventEmitter) {
+  constructor(element: HTMLElement, events: IEventEmitter) {
+    super(element, events);
+
     const openCartButton = document.querySelector('.header__basket') as HTMLButtonElement;
-    this.itemsCount = document.querySelector('.header__basket-counter') as HTMLSpanElement;
-    const cartTemplate = document.querySelector('#basket') as HTMLTemplateElement;
 
-    this.events = events;
-    this.parentContainer = cloneTemplate(cartTemplate);
-    this.container = this.parentContainer.querySelector('.basket__list') as HTMLElement;
-    this.submitButton = this.parentContainer.querySelector('.basket__button') as HTMLButtonElement;
+    this.itemsCount = document.querySelector('.header__basket-counter') as HTMLSpanElement;
     
-    this.price = this.parentContainer.querySelector('.basket__price') as HTMLSpanElement;
+    this.container = this.element.querySelector('.basket__list') as HTMLElement;
+    this.submitButton = this.element.querySelector('.basket__button') as HTMLButtonElement;
+    
+    this.priceContainer = this.element.querySelector('.basket__price') as HTMLSpanElement;
 
     openCartButton.addEventListener('click', (event) => {
-      console.log("Cart opened");
       this.events.emit('modal:open', {element: this.render()})
     })
     
@@ -35,19 +35,6 @@ export class CartView implements ICartView {
       this.events.emit('cart:submit', this.items.map(item => item.id));
     })
     
-  }
-
-  render(): HTMLElement {
-    this.container.replaceChildren(...this.items.map((item) => item.element) || null);
-
-    const itemIndexes = this.container.querySelectorAll('.basket__item-index') as NodeListOf<HTMLSpanElement>;
-    itemIndexes.forEach((index, indexInArr) => {
-      index.textContent = indexInArr + 1 + "";
-    }, 0);
-
-    this.submitButton.disabled = this.items.length === 0;
-
-    return this.parentContainer;
   }
 
   addItem(item: HTMLElement, itemId: string, sum: number) {
@@ -58,7 +45,8 @@ export class CartView implements ICartView {
       id: itemId
     });
 
-    this.price.textContent = sum + " синапсов";
+    this.priceContainer.textContent = sum + " синапсов";
+
 
     this.updateItemsCount();
     this.render();
@@ -66,7 +54,6 @@ export class CartView implements ICartView {
 
   removeItem(itemId: string) {
     this.items = this.items.filter((item) => item.id !== itemId);
-    
     this.updateItemsCount();
     this.render();
   }
@@ -74,11 +61,28 @@ export class CartView implements ICartView {
   clear() {
     this.items = [];
     this.updateItemsCount();
-    this.price.textContent = "0 синапсов";
+    this.priceContainer.textContent = "0 синапсов";
     this.render();
   }
 
   protected updateItemsCount() {
     this.itemsCount.textContent = this.items.length + "";
   }
+
+  render(): HTMLElement {
+    this.container.replaceChildren(...this.items.map((item) => item.element));
+
+    this.submitButton.disabled = (this.items.length === 0);
+
+    // нумерация товаров в корзине
+    this.itemIndexes = this.container.querySelectorAll('.basket__item-index') as NodeListOf<HTMLSpanElement>;
+    if(this.itemIndexes) {
+      this.itemIndexes.forEach((index, indexInArr) => {
+        index.textContent = indexInArr + 1 + "";
+      }, 0);  
+    }
+
+    return super.render();
+  }
+
 }

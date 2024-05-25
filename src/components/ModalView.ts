@@ -2,7 +2,8 @@ import { IEventEmitter, IItem, IModalView } from "../types";
 import { cloneTemplate } from "../utils/utils";
 
 export class ModalView implements IModalView {
-  protected closeButton: HTMLElement;
+  protected closeButton: HTMLButtonElement;
+  protected finishButton: HTMLButtonElement;
   protected container: HTMLElement;
   protected modal: HTMLElement;
   protected events: IEventEmitter;

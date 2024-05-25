@@ -1,42 +1,47 @@
-import { IContactsFormView, IEventEmitter } from "../types";
+import { IFormView, IEventEmitter } from "../types";
 import { cloneTemplate } from "../utils/utils";
+import { View } from "./base/view";
 
-export class ContactsFormView implements IContactsFormView {
-  protected form: HTMLFormElement;
+export class ContactsFormView extends View implements IFormView {
+  protected element: HTMLFormElement;
   protected submitButton: HTMLButtonElement;
   protected emailInput: HTMLInputElement;
   protected phoneInput: HTMLInputElement;
+  protected email: string;
+  protected phoneNumber: string;
 
-  constructor(events: IEventEmitter) {
-    this.form = cloneTemplate(document.querySelector('#contacts') as HTMLTemplateElement);
-    this.submitButton = this.form.querySelector('.submit-button') as HTMLButtonElement;
-    this.emailInput = this.form.elements.namedItem('email') as HTMLInputElement;
-    this.phoneInput = this.form.elements.namedItem('phone') as HTMLInputElement;
+  constructor(element: HTMLElement, events: IEventEmitter) {
+    super(element, events);
+    this.submitButton = this.element.querySelector('.submit-button') as HTMLButtonElement;
+    this.emailInput = this.element.elements.namedItem('email') as HTMLInputElement;
+    this.phoneInput = this.element.elements.namedItem('phone') as HTMLInputElement;
 
     this.emailInput.addEventListener(('input'), (event) => {
-      console.log("Email changed: ", this.emailInput.value);
+      this.email = this.emailInput.value;
+      this.checkSubmitButtonState();
     })
 
     this.phoneInput.addEventListener(('input'), (event) => {
-      console.log("Phone changed: ", this.phoneInput.value);
+      this.phoneNumber = this.phoneInput.value;
+      this.checkSubmitButtonState();
     })
 
     this.submitButton.addEventListener(('click'), (event) => {
       event.preventDefault();
-      console.log("Order submitted. Email and phone:", this.emailInput.value, this.phoneInput.value);
+      this.events.emit('orderData:finished', {email: this.emailInput.value, phone: this.phoneInput.value});
     })
 
   }
 
-  toggleSubmitButton() {
-    if(this.submitButton.disabled === false) {
-      this.submitButton.disabled = true;
-    } else {
+  protected checkSubmitButtonState() {
+    if(this.phoneNumber && this.email) {
       this.submitButton.disabled = false;
+    } else {
+      this.submitButton.disabled = true;
     }
   }
 
   render() {
-    return this.form
+    return super.render() as HTMLFormElement;
   }
 }

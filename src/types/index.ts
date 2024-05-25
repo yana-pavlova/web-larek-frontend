@@ -14,20 +14,27 @@ export interface IItem {
   price: number | null; // есть товар, у которого нет цены
 }
 
-// модель покупателя
-export interface ICustomerModel {
-  customerFullInfo: ICustomer;
-  validateCustomerAddress(data: string): boolean;
-  validateCustomerEmail(data: string): boolean;
-  validateCustomerPhoneNumber(data: string): boolean;
-}
+export type TItems = {items: IItem[]};
 
-// данные покупателя
-export interface ICustomer {
-  paymentType: PaymentType;
+// модель заказа
+export interface IOrderModel {
+  customerFullInfo: IOrder;
+  payment: PaymentType;
   address: string;
   email: string;
-  phoneNumber: string;
+  phone: string;
+  items: string[];
+  total: number;
+}
+
+// данные заказа
+export interface IOrder {
+  payment: PaymentType;
+  address: string;
+  email: string;
+  phone: string;
+  items: string[];
+  total: number;
 }
 
 // каталог товаров
@@ -49,49 +56,35 @@ export type TItemFullInfo = Pick<IItem, 'image' | 'category' | 'title' | 'descri
 
 // интерфейс корзины
 export interface ICartModel {
-  items: Map<string, number>;
   add(item: Partial<IItem>): void;
   remove(item: Partial<IItem>): void;
+  clear(): void;
+  total: number;
 }
 
 // интерфейс eventEmitter
 export interface IEventEmitter {
-  emit: (event: string, data: unknown) => void
+  emit: (event: string, data?: unknown) => void
 }
 
 // интерфейс корзины
 export interface ICartView {
-  render(): HTMLElement
+  render(): HTMLElement;
+  addItem(item: HTMLElement, itemId: string, sum: number): void;
+  removeItem(itemId: string): void;
+  clear(): void;
 }
 
-// интерфейс формы с контактами
-export interface IContactsFormView {
-  render(): void;
-  toggleSubmitButton(): void;
-}
-
-// интерфейс формы с адресом и типом оплаты
-export interface IOrderFormView {
-  form: HTMLFormElement;
-  paymentCashButton: HTMLButtonElement;
-  paymentCardButton: HTMLButtonElement;
-  submitButton: HTMLButtonElement;
-  adressInput: HTMLInputElement;
-
+// интерфейс форм
+export interface IFormView {
   render(): HTMLFormElement;
 }
 
 // интерфейс товара
 export interface IItemView {
-  render(): HTMLElement;
-  category: HTMLSpanElement | null;
-  title: HTMLHeadingElement | HTMLSpanElement | null;
-  image: HTMLImageElement | null;
-  price: HTMLSpanElement | null;
-  description: HTMLParagraphElement | null;
-
-  addCartButton: HTMLButtonElement | null;
-  removeCartButton: HTMLButtonElement | null;
+  render: () => HTMLElement;
+  cartItemView: HTMLElement;
+  modalItemView: HTMLElement;
 }
 
 // интерфейс модального окна
@@ -103,9 +96,8 @@ export interface IModalView {
 
 // интерфейс базового класса вью
 export interface IView {
-  element: HTMLElement,
-  container: HTMLElement,
-  render(data?: unknown): HTMLElement
+  render(data?: unknown): HTMLElement;
+  toggleClass(element: HTMLElement, className: string): void;
 }
 
 //
@@ -114,12 +106,3 @@ export interface ModalOpenEventData {
   data?: Partial<IItem>;
 }
 
-// интерфейс заказа
-export type TOrder = [
-  payment: PaymentType,
-  email: string,
-  phone: string,
-  address: string,
-  total: number,
-  items: string[],
-]

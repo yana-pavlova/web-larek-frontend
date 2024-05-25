@@ -1,10 +1,9 @@
-import { ICartModel, IEventEmitter, IItem, TOrder } from "../types";
+import { ICartModel, IEventEmitter, IItem, IOrder } from "../types";
 
 export class CartModel implements ICartModel {
   protected _items: Map<string, number> = new Map();
-  protected _sum: number = 0;
-  protected _orderedItems: string[] = [];
-  protected _order: TOrder;
+  protected _total: number = 0;
+  protected _order: IOrder;
 
   constructor(protected events: IEventEmitter) {}
 
@@ -12,7 +11,7 @@ export class CartModel implements ICartModel {
     if(!this.items.has(data.id)) {
       this.items.set(data.id, 0);
       this.items.set(data.id, this.items.get(data.id)! + 1);
-      this.sum += Number(data.price);
+      this._total += Number(data.price);
       this._changed();
     } else return
   }
@@ -22,7 +21,7 @@ export class CartModel implements ICartModel {
     if(this.items.get(data.id)! > 0) {
       this.items.set(data.id, this.items.get(data.id)! - 1);
       if(this.items.get(data.id) === 0) this.items.delete(data.id);
-      this.sum -= Number(data.price);
+      this.total -= Number(data.price);
       this._changed();
     }
   }
@@ -31,23 +30,24 @@ export class CartModel implements ICartModel {
     return this._items
   }
 
-  set sum(value: number) {
-    this._sum = value;
+  protected set items(data: Map<string, number>) {
+    this._items = data;
   }
 
-  get sum() {
-    return this._sum;
+  set total(value: number) {
+    this._total = value;
   }
 
-  set orderedItems(data: string[]) {
-    this._orderedItems = data;
+  get total() {
+    return this._total;
   }
 
-  get orderedItems(): string[] {
-    return this._orderedItems;
+  clear(): void {
+    this.items = new Map();
+    this.total = 0;
   }
 
   protected _changed() {
-    this.events.emit('cart:change', {items: Array.from(this.items.keys()), sum: this.sum});
+    this.events.emit('cart:changed', {items: Array.from(this.items.keys()), sum: this.total});
   }
 }
