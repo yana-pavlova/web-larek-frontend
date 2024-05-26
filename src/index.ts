@@ -9,8 +9,7 @@ import { IEventData, IItem, IOrder } from './types';
 import { ItemView } from './components/ItemView';
 import { ModalView } from './components/ModalView';
 import { CartView } from './components/CartView';
-import { OrderFormView } from './components/OrderFormView';
-import { ContactsFormView } from './components/ContactsFormView';
+import { OrderFormView, ContactsFormView } from './components/FormView';
 import { SuccessWindowView } from './components/SuccessWindowView';
 
 // ТЕМПЛЕЙТЫ
