@@ -2,7 +2,6 @@ import { ICartView, IEventEmitter } from "../types";
 import { View } from "./base/view";
 
 export class CartView extends View implements ICartView {
-  // items: HTMLElement[] = [];
   protected items: {
     element: HTMLElement;
     id: string

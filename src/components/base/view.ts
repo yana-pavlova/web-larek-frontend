@@ -10,8 +10,6 @@ export abstract class View implements IView {
   }
 
   toggleClass(element: HTMLElement, className: string) {
-    console.log("!");
-    
     if(element.classList.contains(className)) {
       element.classList.remove(className);
     } else {

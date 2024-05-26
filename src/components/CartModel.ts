@@ -34,7 +34,7 @@ export class CartModel implements ICartModel {
     this._items = data;
   }
 
-  set total(value: number) {
+  protected set total(value: number) {
     this._total = value;
   }
 

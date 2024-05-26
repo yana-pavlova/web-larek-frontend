@@ -1,14 +1,14 @@
 import { Api } from './base/api';
-import { IItem, TItems, IOrder } from '../types';
+import { IDataApi, IItem, IOrder } from '../types';
 
-export class DataApi extends Api {
+export class DataApi extends Api implements IDataApi {
 
   constructor(baseUrl: string, options: RequestInit = {}) {
     super(baseUrl, options);
   }
 
-  getItems(): Promise<TItems> {
-    return this.get('/product') as Promise<TItems>;
+  getItems(): Promise<{items: IItem[]}> {
+    return this.get('/product') as Promise<{items: IItem[]}>;
   }
 
   getItem(id: string): Promise<IItem> {

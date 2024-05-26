@@ -1,12 +1,13 @@
-import { IEventEmitter, IFormView, PaymentType } from "../types";
+import { IEventEmitter } from "../types";
 import { View } from "./base/view";
 
-export class OrderFormView extends View implements IFormView {
+export class OrderFormView extends View {
   protected element: HTMLFormElement;
   protected paymentCashButton: HTMLButtonElement;
   protected paymentCardButton: HTMLButtonElement;
   protected submitButton: HTMLButtonElement;
   protected adressInput: HTMLInputElement;
+  protected adressInputError: HTMLSpanElement;
   protected payment: string;
   protected address: string;
 
@@ -17,10 +18,12 @@ export class OrderFormView extends View implements IFormView {
     this.paymentCashButton = this.element.querySelector('#buttonCash') as HTMLButtonElement;
     this.submitButton = this.element.querySelector('.order__button') as HTMLButtonElement;
     this.adressInput = this.element.elements.namedItem('address') as HTMLInputElement;
+    this.adressInputError = this.element.querySelector('.form__error-address') as HTMLSpanElement;
 
     this.adressInput.addEventListener(('input'), (event) => {
-      this.address = this.adressInput.value;
-      this.checkSubmitButtonState();
+      if(this.checkIfValidated("address")) {
+        this.checkSubmitButtonState();
+      } else this.submitButton.disabled = true;
     })
 
     this.submitButton.addEventListener(('click'), (event) => {
@@ -51,7 +54,19 @@ export class OrderFormView extends View implements IFormView {
     }
   }
 
-  render() {
-    return super.render() as HTMLFormElement;
+  protected checkIfValidated(value: string): boolean {
+    switch(value) {
+      case "address":
+        if(!this.adressInput.validity.valid) {
+          this.adressInputError.textContent = 'Адрес не может быть короче 5 символов';
+        } else {
+          this.adressInputError.textContent = '';
+          this.address = this.adressInput.value;
+        };
+        break;
+    };
+
+    return this.adressInput.validity.valid;
   }
+
 }

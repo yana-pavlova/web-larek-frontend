@@ -1,20 +1,15 @@
 import { IOrder, IOrderModel, PaymentType } from "../types";
 
 export class OrderModel implements IOrderModel {
-  protected _payment: PaymentType;
-  protected _address: string;
-  protected _email: string;
-  protected _phone: string;
-  protected _customerFullInfo: IOrder;
+  protected _payment: PaymentType | null = null;
+  protected _address: string = '';
+  protected _email: string = '';
+  protected _phone: string = '';
+  protected _customerFullInfo: IOrder | null = null;
   protected _items: string[] = [];
   protected _total: number = 0;
 
   constructor() {
-    // по дефолту тип оплаты онлайн
-    this._payment = PaymentType.Online;
-    this._address = '';
-    this._email = '';
-    this._phone = '';
     this._customerFullInfo = {
       payment: this._payment,
       address: this._address,
