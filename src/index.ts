@@ -56,14 +56,19 @@ const gallery = document.querySelector('.gallery') as HTMLElement;
 // server API
 const items = new DataApi(API_URL);
 let cards: ItemView[] = [];
-items.getItems().then((data) => {
-	cards = data.items.map((item: IItem) => {
-		item.image = CDN_URL + item.image;
-		const card = new ItemView(cloneTemplate(templateGalleryCard), events, item);
-		gallery.prepend(card.render());
-		return card;
+items.getItems()
+	.then((data) => {
+		cards = data.items.map((item: IItem) => {
+			item.image = CDN_URL + item.image;
+			const card = new ItemView(cloneTemplate(templateGalleryCard), events, item);
+			gallery.prepend(card.render());
+			return card;
+		});
+		return cards
+	})
+		.catch ((err) => {
+			console.log('Произошла ошибка:', err);
 	});
-});
 
 // ПОДПИСКА НА СОБЫТИЯ
 
@@ -95,7 +100,7 @@ events.on<{ items: string[] }>('cart:changed', (data) => {
 		data.items.forEach((dataItem) => {
 			if (item.data.id === dataItem) {
 				cartView.addItem(
-					item.cartItemView(cloneTemplate(templateCartCard)),
+					item.getCartItemView(cloneTemplate(templateCartCard)),
 					item.data.id,
 					cartData.total
 				);

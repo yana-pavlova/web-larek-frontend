@@ -17,7 +17,7 @@ export class CartView extends View implements ICartView {
   constructor(element: HTMLElement, events: IEventEmitter) {
     super(element, events);
 
-    const openCartButton = document.querySelector('.header__basket') as HTMLButtonElement;
+    const cartButton = document.querySelector('.header__basket') as HTMLButtonElement;
 
     this.itemsCount = document.querySelector('.header__basket-counter') as HTMLSpanElement;
     
@@ -26,7 +26,7 @@ export class CartView extends View implements ICartView {
     
     this.priceContainer = this.element.querySelector('.basket__price') as HTMLSpanElement;
 
-    openCartButton.addEventListener('click', (event) => {
+    cartButton.addEventListener('click', (event) => {
       this.events.emit('modal:open', {element: this.render()})
     })
     

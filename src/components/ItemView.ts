@@ -44,7 +44,7 @@ export class ItemView extends View implements IItemView {
     // если это товар на главной странице, его можно открыть в модальном окне по клику на сам товар
     if(this.element.classList.contains('gallery__item')) {
       this.element.addEventListener(('click'), (event) => {
-        this.events.emit('modal:open', {element: this.modalItemView(cloneTemplate(templateFullViewCard)), data: this.data});
+        this.events.emit('modal:open', {element: this.getModalItemView(cloneTemplate(templateFullViewCard)), data: this.data});
       })
     }
 
@@ -54,7 +54,7 @@ export class ItemView extends View implements IItemView {
     return this._data;
   }
 
-  cartItemView(element: HTMLElement): HTMLElement {
+  getCartItemView(element: HTMLElement): HTMLElement {
     this.initiateHtmlElement(element);
     this.removeCartButton = this.element.querySelector('.basket__item-delete');
     if(this.removeCartButton) {
@@ -67,7 +67,7 @@ export class ItemView extends View implements IItemView {
     return this.render();
   }
 
-  modalItemView(element: HTMLElement): HTMLElement {
+  getModalItemView(element: HTMLElement): HTMLElement {
     this.initiateHtmlElement(element);
     
     this.addCartButton = this.element.querySelector('.card__button');

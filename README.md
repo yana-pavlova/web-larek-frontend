@@ -130,8 +130,8 @@ export interface ICartView {
 интерфейс товара
 ```
 export interface IItemView {
-  cartItemView(element: HTMLElement): HTMLElement;
-  modalItemView(element: HTMLElement): HTMLElement;
+  getCartItemView(element: HTMLElement): HTMLElement;
+  getModalItemView(element: HTMLElement): HTMLElement;
   data: Partial<IItem>;
 }
 ```
