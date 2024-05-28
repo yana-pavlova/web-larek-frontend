@@ -1,7 +1,3 @@
-РАССМОТРЕТЬ:
-- синглтон паттерн для модалки https://practicum.yandex.ru/learn/frontend-developer/courses/ab2d21aa-198e-4dfe-a360-91c0790dfe09/sprints/179005/topics/53f1da26-ba1c-4c11-896c-95d34b091f3d/lessons/4e833ab9-147d-4614-8bc4-3bfbce35be24/
-- 
-
 # Проектная работа "Веб-ларек"
 
 Стек: HTML, SCSS, TS, Webpack
