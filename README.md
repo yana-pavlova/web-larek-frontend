@@ -1,4 +1,5 @@
-# интернет-магазин Web-ларёк
+# Интернет-магазин Web-ларёк
+![1728567269819196](https://github.com/user-attachments/assets/82431e1b-899f-4443-9e01-75c186b35848)
 
 ## Стек
 <a href="https://www.w3.org/TR/2011/WD-html5-20110405/"><img height="32" width="32" src="https://cdn.simpleicons.org/html5" /></a>
@@ -12,6 +13,7 @@
 ## Запуск
 ```
 npm i
+npm run build
 npm run start
 ```
 
